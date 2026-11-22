@@ -1,0 +1,111 @@
+<main class="page">
+  <header>
+    <h1>Demandes de déploiement</h1>
+    <p class="subtitle">Une seule demande par application, environnement et version.</p>
+  </header>
+
+  <section class="card" aria-labelledby="form-title">
+    <h2 id="form-title">Nouvelle demande</h2>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="fields">
+        <label class="field">
+          <span>Application</span>
+          <input
+            formControlName="application"
+            name="application"
+            autocomplete="off"
+            placeholder="ex. billing-api"
+            [attr.maxlength]="applicationMaxLength"
+            [attr.aria-invalid]="isInvalid('application')"
+          />
+          @if (isInvalid('application')) {
+            <small class="field-error">L'application est obligatoire.</small>
+          }
+          @for (message of fieldErrors()['application'] ?? []; track message) {
+            <small class="field-error">{{ message }}</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Environnement</span>
+          <select formControlName="environment" name="environment">
+            @for (environment of environments; track environment) {
+              <option [value]="environment">{{ environment }}</option>
+            }
+          </select>
+          @for (message of fieldErrors()['environment'] ?? []; track message) {
+            <small class="field-error">{{ message }}</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Version</span>
+          <input
+            formControlName="version"
+            name="version"
+            autocomplete="off"
+            placeholder="ex. 1.4.2"
+            [attr.maxlength]="versionMaxLength"
+            [attr.aria-invalid]="isInvalid('version')"
+          />
+          @if (isInvalid('version')) {
+            <small class="field-error">La version est obligatoire.</small>
+          }
+          @for (message of fieldErrors()['version'] ?? []; track message) {
+            <small class="field-error">{{ message }}</small>
+          }
+        </label>
+      </div>
+
+      <button type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Enregistrement…' : 'Créer la demande' }}
+      </button>
+    </form>
+
+    @if (errorMessage(); as message) {
+      <p class="alert alert-error" role="alert" data-testid="error">{{ message }}</p>
+    }
+    @if (successMessage(); as message) {
+      <p class="alert alert-success" role="status" data-testid="success">{{ message }}</p>
+    }
+  </section>
+
+  <section class="card" aria-labelledby="list-title">
+    <div class="list-header">
+      <h2 id="list-title">Demandes enregistrées</h2>
+      <button type="button" class="secondary" (click)="loadRequests()" [disabled]="loading()">Actualiser</button>
+    </div>
+
+    @if (loading()) {
+      <p class="muted">Chargement…</p>
+    } @else if (loadError(); as message) {
+      <p class="alert alert-error" role="alert">{{ message }}</p>
+    } @else if (requests().length === 0) {
+      <p class="muted" data-testid="empty">Aucune demande pour le moment.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Application</th>
+            <th scope="col">Environnement</th>
+            <th scope="col">Version</th>
+            <th scope="col">Créée le</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (request of requests(); track request.id) {
+            <tr data-testid="request-row">
+              <td>{{ request.application }}</td>
+              <td>
+                <span class="badge" [class.badge-production]="request.environment === 'production'">{{ request.environment }}</span>
+              </td>
+              <td>{{ request.version }}</td>
+              <td>{{ request.createdAt | date: 'dd/MM/yyyy HH:mm:ss' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</main>
