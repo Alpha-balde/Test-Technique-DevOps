@@ -51,6 +51,19 @@ run "longest_names_fit_azure_limits" {
   }
 }
 
+run "null_postgres_sku_uses_module_default" {
+  command = plan
+
+  variables {
+    postgres_sku_name = null
+  }
+
+  assert {
+    condition     = azurerm_postgresql_flexible_server.this.sku_name == "B_Standard_B1ms"
+    error_message = "A null postgres_sku_name must fall back to the module default."
+  }
+}
+
 run "rejects_latest_tag" {
   command = plan
 

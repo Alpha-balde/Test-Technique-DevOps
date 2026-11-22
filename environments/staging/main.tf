@@ -6,4 +6,6 @@ module "app" {
   location        = var.location
   container_image = var.container_image
   tags            = var.tags
+
+  postgres_sku_name = var.postgres_sku_name
 }

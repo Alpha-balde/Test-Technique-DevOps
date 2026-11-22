@@ -18,6 +18,12 @@ variable "container_image" {
   type        = string
 }
 
+variable "postgres_sku_name" {
+  description = "PostgreSQL Flexible Server SKU. null keeps the module default (B_Standard_B1ms)."
+  type        = string
+  default     = null
+}
+
 variable "tags" {
   description = "Additional tags."
   type        = map(string)

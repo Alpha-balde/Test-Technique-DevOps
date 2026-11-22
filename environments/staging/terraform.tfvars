@@ -4,3 +4,5 @@ environment  = "staging"
 location     = "francecentral"
 # Pinned by digest (immutable). Built from commit 755b0c9, also tagged sha-755b0c9.
 container_image = "ghcr.io/alpha-balde/test-technique-devops@sha256:4fe3a4549bc9a3f3ee120f64223e0487145492d99f2e8ff14ec3d538d6e89b07"
+# B_Standard_B1ms returned SkuNotAvailable twice in francecentral for this subscription.
+postgres_sku_name = "B_Standard_B2s"

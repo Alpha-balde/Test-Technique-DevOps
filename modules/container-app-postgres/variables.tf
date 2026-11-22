@@ -85,9 +85,10 @@ variable "postgres_version" {
 }
 
 variable "postgres_sku_name" {
-  description = "PostgreSQL Flexible Server SKU (tier_name)."
+  description = "PostgreSQL Flexible Server SKU (tier_name). Passing null uses this default."
   type        = string
   default     = "B_Standard_B1ms"
+  nullable    = false
 }
 
 variable "postgres_storage_mb" {
