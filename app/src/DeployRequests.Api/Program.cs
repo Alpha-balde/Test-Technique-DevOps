@@ -3,6 +3,7 @@ using DeployRequests.Api.Features.DeploymentRequests;
 using DeployRequests.Api.Health;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,6 +36,16 @@ builder.Services.AddProblemDetails();
 builder.Services
     .AddHealthChecks()
     .AddDbContextCheck<AppDbContext>("database");
+
+// The DbContext check goes through the Npgsql retry strategy, which could make
+// /health hang ~30s when the database is down. Cap it so probes get a fast answer.
+builder.Services.Configure<HealthCheckServiceOptions>(options =>
+{
+    foreach (var registration in options.Registrations)
+    {
+        registration.Timeout = TimeSpan.FromSeconds(3);
+    }
+});
 
 var app = builder.Build();
 
