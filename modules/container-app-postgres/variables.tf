@@ -108,7 +108,7 @@ variable "postgres_backup_retention_days" {
 }
 
 variable "db_name" {
-  description = "Name of the application database. Changing it also requires incrementing db_password_version so the connection string secret is rewritten."
+  description = "Name of the application database. Changing it requires incrementing db_password_version so the connection string secret is rewritten."
   type        = string
   default     = "deployrequests"
 }
@@ -129,7 +129,10 @@ variable "db_admin_login" {
 }
 
 variable "db_password_version" {
-  description = "Version of the generated database password. Increment it to rotate the password: the Key Vault secrets and the server password are rewritten together."
+  # Write-only values (*_wo) are only sent to Azure when this version changes.
+  # Increment it when: rotating the password, changing db_name or db_admin_login,
+  # or changing the connection string format in secrets.tf. See the module README.
+  description = "Version of the write-only secrets. Increment it to rotate the password or to rewrite the connection string (db_name, db_admin_login or format change): both Key Vault secrets and the server password are rewritten together."
   type        = number
   default     = 1
 
@@ -193,9 +196,14 @@ variable "connection_string_env_name" {
 }
 
 variable "app_settings" {
-  description = "Additional non-secret environment variables for the container."
+  description = "Additional non-secret environment variables for the container. Must not redefine the connection string variable."
   type        = map(string)
   default     = {}
+
+  validation {
+    condition     = !contains([for name in keys(var.app_settings) : upper(name)], upper(var.connection_string_env_name))
+    error_message = "app_settings must not redefine the connection string variable (connection_string_env_name): it is injected from Key Vault."
+  }
 }
 
 variable "health_path" {

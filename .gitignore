@@ -12,6 +12,9 @@
 *.tfstate.*
 *.tfplan
 tfplan
+tfplan.txt
+# Only root configurations (environments/*) commit their lock file
+modules/**/.terraform.lock.hcl
 crash.log
 crash.*.log
 override.tf
