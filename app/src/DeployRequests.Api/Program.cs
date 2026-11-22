@@ -52,6 +52,21 @@ var app = builder.Build();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
 
+// The Angular build is copied into wwwroot by the Dockerfile: one image, one
+// origin, no CORS. Single screen, so no SPA fallback route is needed.
+// index.html is revalidated on every load; hashed bundles can be cached.
+app.UseDefaultFiles();
+app.UseStaticFiles(new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        if (context.File.Name.Equals("index.html", StringComparison.OrdinalIgnoreCase))
+        {
+            context.Context.Response.Headers.CacheControl = "no-cache";
+        }
+    },
+});
+
 // /health: full check including database connectivity (used for the demo / readiness).
 app.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = HealthResponseWriter.WriteAsync });
 
