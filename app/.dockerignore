@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+**/node_modules/
+**/dist/
+**/.angular/
+**/TestResults/
+**/*.user
+**/.vs/
+**/.vscode/
+**/.env
+**/.env.*
+tests/
+Dockerfile
+.dockerignore
