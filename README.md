@@ -28,8 +28,8 @@ cd environments/staging
 terraform init
 terraform plan -out=tfplan
 terraform apply tfplan          # 15 à 20 minutes
-terraform output -raw app_url   # URL publique ; ajouter /health
-terraform destroy               # supprime tout sauf NetworkWatcherRG, créé par Azure
+terraform output -raw app_url   # URL publique 
+terraform destroy               # supprime
 ```
 
 En local : copier `.env.example` en `.env`, renseigner `POSTGRES_PASSWORD`, puis `docker compose up --build`.
