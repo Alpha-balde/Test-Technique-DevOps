@@ -11,7 +11,7 @@ déployer par un seul `terraform apply`, à confirmer au prochain essai depuis z
 2. **Une seule image Docker** (API et écran Angular), publiée sur GHCR et épinglée par digest.
 3. **Module Terraform** et `staging` : `fmt`, `validate`, tests du module, relecture de chaque plan.
 4. **Vérification en ligne** : `/health`, création d'une demande, doublon refusé en 409.
-
+ **URL:** https://ca-deployreq-staging.nicetree-a3075cd2.northeurope.azurecontainerapps.io
 ## Choix et compromis
 
 - **Réseau** : PostgreSQL privé ; le NSG autorise le port 5432 depuis le sous-réseau applicatif et dans le sous-réseau PostgreSQL, et refuse le reste du trafic du VNet.
